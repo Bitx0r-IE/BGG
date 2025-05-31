@@ -9,22 +9,25 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.bgg.Entities.EventEntity
 import com.example.bgg.databinding.ActivityItemLayoutBinding
 
-class EventAdapter : ListAdapter<EventEntity, EventAdapter.EventViewHolder>(EventDiffCallback()) {
+class EventAdapter(private val onItemClick: (EventEntity) -> Unit) : ListAdapter<EventEntity, EventAdapter.EventViewHolder>(EventDiffCallback()) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): EventViewHolder {
         val binding = ActivityItemLayoutBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-        return EventViewHolder(binding)
+        return EventViewHolder(binding, onItemClick)
     }
 
     override fun onBindViewHolder(holder: EventViewHolder, position: Int) {
         holder.bind(getItem(position))
     }
 
-    class EventViewHolder(private val binding: ActivityItemLayoutBinding) : RecyclerView.ViewHolder(binding.root) {
+    class EventViewHolder(private val binding: ActivityItemLayoutBinding, private val onItemClick: (EventEntity) -> Unit) : RecyclerView.ViewHolder(binding.root) {
         fun bind(event: EventEntity) {
             binding.title.text = event.gameName
             binding.date.text = event.Date.toString()
             // bind image or other data as needed
+            binding.root.setOnClickListener {
+                onItemClick(event)
+            }
         }
     }
 

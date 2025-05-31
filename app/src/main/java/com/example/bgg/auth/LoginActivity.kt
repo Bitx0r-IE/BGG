@@ -42,7 +42,10 @@ class LoginActivity: AppCompatActivity() {
                 val user = userDao.getUserByEmail(email)
                 if (user != null && user.password == password) {
                     val sharedPref = getSharedPreferences("bgg_prefs", MODE_PRIVATE)
-                    sharedPref.edit().putInt("userId", user.id).apply()
+                    sharedPref.edit().putInt("userId", user.id).apply() // Se que es más optimo y seguro hacer una call, a getuserby pero por no rizar mas el rizo dejo el sharedData
+                    sharedPref.edit().putString("userName", user.name).apply()
+                    sharedPref.edit().putString("userEmail", user.email).apply()
+                    sharedPref.edit().putString("userPass", user.password).apply()
                     startActivity(Intent(this@LoginActivity, MainActivity::class.java))
                     finish()
                 } else {

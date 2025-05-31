@@ -15,6 +15,8 @@ import com.example.bgg.ui.adapters.EventAdapter
 import androidx.fragment.app.viewModels
 import com.example.bgg.ui.CreateEventActivity
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.bgg.ui.EditEventActivity
+import com.example.bgg.ui.ViewEventActivity
 
 
 class HomeFragment : Fragment() {
@@ -30,7 +32,12 @@ class HomeFragment : Fragment() {
         Log.d("HomeFragment", "Setting layoutManager and adapter")
         binding.recyclerViewEvents.layoutManager = LinearLayoutManager(requireContext())
 
-        adapter = EventAdapter()
+        adapter = EventAdapter { selectedEvent ->
+            val intent = Intent(requireContext(), ViewEventActivity::class.java)
+            intent.putExtra("eventId", selectedEvent.id)
+            startActivity(intent)
+        }
+
         binding.recyclerViewEvents.adapter = adapter
         Log.d("HomeFragment", "Adapter set")
         homeViewModel.events.observe(viewLifecycleOwner) { events ->

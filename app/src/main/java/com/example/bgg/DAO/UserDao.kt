@@ -2,8 +2,10 @@ package com.example.bgg.DAO
 
 import androidx.lifecycle.LiveData
 import androidx.room.Dao
+import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Query
+import androidx.room.Update
 import com.example.bgg.Entities.UserEntity
 
 @Dao
@@ -22,4 +24,10 @@ interface UserDao {
 
     @Query("SELECT * FROM users WHERE id=:id")
     suspend fun getUserById(id: Int): UserEntity?
+
+    @Update
+    fun updateUser(user: UserEntity)
+
+    @Delete
+    fun deleteUser(user: UserEntity)
 }

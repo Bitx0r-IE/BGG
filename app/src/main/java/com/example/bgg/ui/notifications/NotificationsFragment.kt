@@ -11,9 +11,15 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import com.example.bgg.Database.AppDatabase
 import com.example.bgg.R
 import com.example.bgg.auth.LoginActivity
 import com.example.bgg.databinding.FragmentNotificationsBinding
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import org.w3c.dom.Text
 
 class NotificationsFragment : Fragment() {
 
@@ -25,24 +31,41 @@ class NotificationsFragment : Fragment() {
 
     private lateinit var editUsername: EditText
     private lateinit var editEmail: EditText
+    private lateinit var editPassword: EditText
     private lateinit var buttonEdit: Button
     private lateinit var buttonLogout: Button
+    private lateinit var userData: TextView
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         val root = inflater.inflate(R.layout.fragment_notifications, container, false)
 
         editUsername = root.findViewById(R.id.editUsername)
         editEmail = root.findViewById(R.id.editEmail)
+        editPassword = root.findViewById(R.id.editPassword)
         buttonEdit = root.findViewById(R.id.buttonEdit)
         buttonLogout = root.findViewById(R.id.buttonLogout)
+        userData = root.findViewById(R.id.idUserData)
 
         // Load user data from SharedPreferences
         val sharedPref = requireActivity().getSharedPreferences("bgg_prefs", 0)
-        val username = sharedPref.getString("username", "") ?: ""
-        val email = sharedPref.getString("email", "") ?: ""
+        val userId = sharedPref.getInt("userId", -1)
 
-        editUsername.setText(username)
-        editEmail.setText(email)
+        val db = AppDatabase.getDatabase(requireContext())
+        val userDao = db.userDao()
+
+        // Load user data from database asynchronously
+        CoroutineScope(Dispatchers.IO).launch {
+            val user = userDao.getUserById(userId)
+            withContext(Dispatchers.Main) {
+                if (user != null) {
+                    userData.text = user.name
+                    editUsername.setText(user.name)
+                    editEmail.setText(user.email)
+                } else {
+                    Toast.makeText(requireContext(), "User not found", Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
 
         buttonEdit.setOnClickListener {
             val newUsername = editUsername.text.toString().trim()
@@ -53,14 +76,30 @@ class NotificationsFragment : Fragment() {
                 return@setOnClickListener
             }
 
-            // Save updated info in SharedPreferences
-            with(sharedPref.edit()) {
-                putString("username", newUsername)
-                putString("email", newEmail)
-                apply()
-            }
+            // Update user in database
+            CoroutineScope(Dispatchers.IO).launch {
+                val user = userDao.getUserById(userId)
+                if (user != null) {
+                    val updatedUser = user.copy(name = newUsername, email = newEmail)
+                    userDao.updateUser(updatedUser)
 
-            Toast.makeText(requireContext(), "Profile updated", Toast.LENGTH_SHORT).show()
+                    // Optionally update SharedPreferences as well
+                    with(sharedPref.edit()) {
+                        putString("username", newUsername)
+                        putString("email", newEmail)
+                        apply()
+                    }
+
+                    withContext(Dispatchers.Main) {
+                        Toast.makeText(requireContext(), "Profile updated", Toast.LENGTH_SHORT).show()
+                        userData.text = newUsername
+                    }
+                } else {
+                    withContext(Dispatchers.Main) {
+                        Toast.makeText(requireContext(), "User not found", Toast.LENGTH_SHORT).show()
+                    }
+                }
+            }
         }
 
         buttonLogout.setOnClickListener {

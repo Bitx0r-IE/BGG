@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.bgg.databinding.FragmentDashboardBinding
 import com.example.bgg.databinding.FragmentHomeBinding
 import com.example.bgg.ui.CreateEventActivity
+import com.example.bgg.ui.EditEventActivity
 import com.example.bgg.ui.adapters.EventAdapter
 import com.example.bgg.ui.home.HomeViewModel
 
@@ -35,9 +36,18 @@ class DashboardFragment : Fragment() {
         Log.d("HomeFragment", "Setting layoutManager and adapter")
         binding.recyclerViewEvents.layoutManager = LinearLayoutManager(requireContext())
 
-        adapter = EventAdapter()
+        adapter = EventAdapter { selectedEvent ->
+            val intent = Intent(requireContext(), EditEventActivity::class.java)
+            intent.putExtra("eventId", selectedEvent.id)
+            startActivity(intent)
+        }
+
         binding.recyclerViewEvents.adapter = adapter
         Log.d("HomeFragment", "Adapter set")
+        homeViewModel.events.observe(viewLifecycleOwner) { events ->
+            adapter.submitList(events)
+        }
+
         homeViewModel.events.observe(viewLifecycleOwner) { events ->
             adapter.submitList(events)
         }

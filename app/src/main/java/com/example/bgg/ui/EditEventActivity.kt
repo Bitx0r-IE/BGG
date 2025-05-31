@@ -34,7 +34,7 @@ class EditEventActivity : AppCompatActivity() {
     @SuppressLint("MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_create_event)
+        setContentView(R.layout.activity_edit_event)
 
         db = AppDatabase.getDatabase(this)
         eventDao = db.eventDao()
@@ -44,9 +44,8 @@ class EditEventActivity : AppCompatActivity() {
         val peopleInput = findViewById<EditText>(R.id.number_of_people)
         val dateInput = findViewById<EditText>(R.id.event_date)
         val updateButton = findViewById<Button>(R.id.create_event_button)
+        val deleteButton = findViewById<Button>(R.id.delete_event_button)
         val formatter = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
-
-        updateButton.text = "Update Event"
 
         val eventId = intent.getIntExtra("eventId", -1)
         if (eventId == -1) {
@@ -102,6 +101,18 @@ class EditEventActivity : AppCompatActivity() {
                     eventDao.update(updated)
                     withContext(Dispatchers.Main) {
                         Toast.makeText(this@EditEventActivity, "Event updated", Toast.LENGTH_SHORT).show()
+                        finish()
+                    }
+                }
+            }
+        }
+
+        deleteButton.setOnClickListener {
+            selectedEvent?.let { event ->
+                CoroutineScope(Dispatchers.IO).launch {
+                    eventDao.delete(event)
+                    withContext(Dispatchers.Main) {
+                        Toast.makeText(this@EditEventActivity, "Event deleted", Toast.LENGTH_SHORT).show()
                         finish()
                     }
                 }
