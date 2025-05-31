@@ -8,18 +8,18 @@
     <fragment
         android:id="@+id/navigation_home"
         android:name="com.example.bgg.ui.home.HomeFragment"
-        android:label="@string/title_home"
+        android:label="Partidas"
         tools:layout="@layout/fragment_home" />
 
     <fragment
         android:id="@+id/navigation_dashboard"
         android:name="com.example.bgg.ui.dashboard.DashboardFragment"
-        android:label="@string/title_dashboard"
+        android:label="Mis partidas"
         tools:layout="@layout/fragment_dashboard" />
 
     <fragment
         android:id="@+id/navigation_notifications"
         android:name="com.example.bgg.ui.notifications.NotificationsFragment"
-        android:label="@string/title_notifications"
-        tools:layout="@layout/fragment_notifications" />
+        android:label="Perfil"
+        tools:layout="@layout/user_data" />
 </navigation>

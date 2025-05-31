@@ -1,38 +1,43 @@
 package com.example.bgg.ui.home
 
+import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import com.example.bgg.DAO.EventDao
 import com.example.bgg.databinding.FragmentHomeBinding
+import com.example.bgg.ui.adapters.EventAdapter
+import androidx.fragment.app.viewModels
+import com.example.bgg.ui.CreateEventActivity
+import androidx.recyclerview.widget.LinearLayoutManager
+
 
 class HomeFragment : Fragment() {
 
     private var _binding: FragmentHomeBinding? = null
-
-    // This property is only valid between onCreateView and
-    // onDestroyView.
     private val binding get() = _binding!!
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
-        val homeViewModel =
-            ViewModelProvider(this).get(HomeViewModel::class.java)
+    private val homeViewModel: HomeViewModel by viewModels()
+    private lateinit var adapter: EventAdapter
 
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
-        val root: View = binding.root
+        Log.d("HomeFragment", "Setting layoutManager and adapter")
+        binding.recyclerViewEvents.layoutManager = LinearLayoutManager(requireContext())
 
-        val textView: TextView = binding.textHome
-        homeViewModel.text.observe(viewLifecycleOwner) {
-            textView.text = it
+        adapter = EventAdapter()
+        binding.recyclerViewEvents.adapter = adapter
+        Log.d("HomeFragment", "Adapter set")
+        homeViewModel.events.observe(viewLifecycleOwner) { events ->
+            adapter.submitList(events)
         }
-        return root
+
+        return binding.root
     }
 
     override fun onDestroyView() {

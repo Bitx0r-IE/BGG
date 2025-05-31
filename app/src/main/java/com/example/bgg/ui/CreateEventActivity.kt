@@ -1,4 +1,5 @@
 package com.example.bgg.ui
+import java.util.Calendar
 
 import android.annotation.SuppressLint
 import android.os.Bundle
@@ -19,6 +20,10 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import android.app.DatePickerDialog
+import java.text.SimpleDateFormat
+import java.util.Locale
+
 
 class CreateEventActivity : AppCompatActivity() {
 
@@ -34,15 +39,14 @@ class CreateEventActivity : AppCompatActivity() {
         db = AppDatabase.getDatabase(this)
         eventDao = db.eventDao()
 
-        val searchBox = findViewById<EditText>(R.id.game_search)
-        val resultsList = findViewById<ListView>(R.id.game_results)
+        val game_name = findViewById<EditText>(R.id.game_search)
         val tableInput = findViewById<EditText>(R.id.table_number)
         val peopleInput = findViewById<EditText>(R.id.number_of_people)
         val createButton = findViewById<Button>(R.id.create_event_button)
+        val eventDateEditText = findViewById<EditText>(R.id.event_date)
 
         val adapter = ArrayAdapter<Game>(this, android.R.layout.simple_list_item_1)
-        resultsList.adapter = adapter
-
+        /*
         searchBox.addTextChangedListener {
             val query = it.toString()
             if (query.length > 2) {
@@ -59,18 +63,64 @@ class CreateEventActivity : AppCompatActivity() {
         resultsList.setOnItemClickListener { _, _, position, _ ->
             selectedGame = adapter.getItem(position)
         }
+        */
+        eventDateEditText.setOnClickListener {
+            val calendar = Calendar.getInstance()
+            val year = calendar.get(Calendar.YEAR)
+            val month = calendar.get(Calendar.MONTH)
+            val day = calendar.get(Calendar.DAY_OF_MONTH)
+
+            val datePicker = DatePickerDialog(this, { _, selectedYear, selectedMonth, selectedDay ->
+                // Note: Month is zero-based (0 = January)
+                val selectedDate = String.format("%04d-%02d-%02d", selectedYear, selectedMonth + 1, selectedDay)
+                eventDateEditText.setText(selectedDate)
+            }, year, month, day)
+
+            datePicker.show()
+        }
+
+        val sharedPref = getSharedPreferences("bgg_prefs", MODE_PRIVATE)
+        val userId = sharedPref.getInt("userId", -1)
 
         createButton.setOnClickListener {
             val tableNumber = tableInput.text.toString().toIntOrNull() ?: 0
             val people = peopleInput.text.toString().toIntOrNull() ?: 0
 
+            val dateStr = eventDateEditText.text.toString()
+            val formatter = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+            val selectedDate = try {
+                formatter.parse(dateStr)
+            } catch (e: Exception) {
+                null
+            }
+
+            if (selectedDate == null) {
+                Toast.makeText(this, "Please select a valid date", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+
+            val newEvent = EventEntity(
+                gameName = game_name.text.toString(),
+                tableNumber = tableNumber,
+                numberOfPeople = people,
+                createdBy = userId,
+                Date = selectedDate
+            )
+            CoroutineScope(Dispatchers.IO).launch {
+                eventDao.insert(newEvent)
+                withContext(Dispatchers.Main) {
+                    Toast.makeText(this@CreateEventActivity, "Event Created", Toast.LENGTH_SHORT).show()
+                    finish()
+                }
+            }
+            /*
             selectedGame?.let { game ->
                 val newEvent = EventEntity(
-                    gameId = game.id,
                     gameName = game.name,
                     tableNumber = tableNumber,
                     numberOfPeople = people,
-                    createdBy = 1 // static for now
+                    createdBy = userId,
+                    Date = selectedDate
                 )
                 CoroutineScope(Dispatchers.IO).launch {
                     eventDao.insert(newEvent)
@@ -79,7 +129,7 @@ class CreateEventActivity : AppCompatActivity() {
                         finish()
                     }
                 }
-            } ?: Toast.makeText(this, "Select a game", Toast.LENGTH_SHORT).show()
+            } ?: Toast.makeText(this, "Select a game", Toast.LENGTH_SHORT).show()*/
         }
     }
 }

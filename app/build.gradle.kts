@@ -55,6 +55,8 @@ dependencies {
     implementation("androidx.core:core-ktx:$coreKtxVersion")
     implementation("com.google.android.material:material:$materialVersion")
     implementation("androidx.constraintlayout:constraintlayout:$constraintLayoutVersion")
+    implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.6.1")
+
 
     // Lifecycle
     implementation("androidx.lifecycle:lifecycle-livedata-ktx:$lifecycleVersion")
@@ -78,4 +80,7 @@ dependencies {
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
+
+    // Logging support (optional, for Room query debugging)
+    implementation("androidx.sqlite:sqlite-framework:2.3.1")
 }

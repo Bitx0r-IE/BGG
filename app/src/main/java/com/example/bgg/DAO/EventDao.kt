@@ -13,4 +13,10 @@ interface EventDao {
 
     @Insert
     suspend fun insert(event: EventEntity)
+
+    @Query("SELECT * FROM events WHERE id=:id")
+    suspend fun getEventById(id: Int): EventEntity?
+
+    @Query("Select * FROM events WHERE createdBy=:userId")
+    fun getEventByUserId(userId: Int): LiveData<List<EventEntity>>
 }
