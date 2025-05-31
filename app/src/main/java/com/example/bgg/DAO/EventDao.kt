@@ -2,8 +2,10 @@ package com.example.bgg.DAO
 
 import androidx.lifecycle.LiveData
 import androidx.room.Dao
+import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Query
+import androidx.room.Update
 import com.example.bgg.Entities.EventEntity
 
 @Dao
@@ -19,4 +21,10 @@ interface EventDao {
 
     @Query("Select * FROM events WHERE createdBy=:userId")
     fun getEventByUserId(userId: Int): LiveData<List<EventEntity>>
+
+    @Update
+    fun update(event: EventEntity)
+
+    @Delete
+    fun delete(event: EventEntity)
 }
