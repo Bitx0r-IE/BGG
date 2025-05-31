@@ -24,18 +24,53 @@
             />
 
         <TextView
+            android:id="@+id/idUserData"
+            android:hint="email"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_marginLeft="25dp"
+            android:layout_marginRight="25dp"
+            android:layout_marginTop="2dp"
+            android:inputType="textEmailAddress"
+            android:textSize="18sp"
+            android:textAlignment="center"/>
+
+        <Button
+            android:id="@+id/buttonLogout"
+            android:text="Logout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="25dp"
+            android:layout_marginRight="25dp"
+            android:layout_marginTop="5dp"
+            />
+
+        <TextView
+            android:id="@+id/idEditarText"
+            android:hint="Editar perfil"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:textColor="@color/black"
+            android:layout_marginLeft="25dp"
+            android:layout_marginRight="25dp"
+            android:layout_marginTop="10dp"
+            android:inputType="textEmailAddress"
+            android:textSize="18sp"
+            android:textAlignment="center"/>
+
+        <EditText
             android:id="@+id/editUsername"
             android:hint="username"
             android:layout_width="match_parent"
             android:layout_height="50dp"
             android:layout_marginLeft="25dp"
             android:layout_marginRight="25dp"
-            android:layout_marginTop="25dp"
+            android:layout_marginTop="1dp"
             android:inputType="text"
             android:textAlignment="center"
             />
 
-        <TextView
+        <EditText
             android:id="@+id/editEmail"
             android:hint="email"
             android:layout_width="match_parent"
@@ -47,18 +82,20 @@
             android:textSize="15sp"
             android:textAlignment="center"/>
 
-        <Button
-            android:id="@+id/buttonEdit"
-            android:text="Editar"
+        <EditText
+            android:id="@+id/editPassword"
+            android:hint="password"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="50dp"
             android:layout_marginLeft="25dp"
             android:layout_marginRight="25dp"
-            android:layout_marginTop="40dp"
-            />
+            android:layout_marginTop="25dp"
+            android:inputType="textEmailAddress"
+            android:textSize="15sp"
+            android:textAlignment="center"/>
 
         <Button
-            android:id="@+id/buttonLogout"
+            android:id="@+id/buttonEdit"
             android:text="Editar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
