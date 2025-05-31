@@ -21,5 +21,5 @@
         android:id="@+id/navigation_notifications"
         android:name="com.example.bgg.ui.notifications.NotificationsFragment"
         android:label="Perfil"
-        tools:layout="@layout/user_data" />
+        tools:layout="@layout/fragment_notifications" />
 </navigation>

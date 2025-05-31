@@ -4,22 +4,70 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:padding="16dp"
     tools:context=".ui.notifications.NotificationsFragment">
 
-    <TextView
-        android:id="@+id/textNotifications"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Notifications will appear here"
-        android:textSize="18sp"
-        android:layout_marginBottom="12dp"
-        tools:ignore="MissingConstraints" />
-
-    <ListView
-        android:id="@+id/event_list"
+    <LinearLayout
+        android:id="@+id/event_list_container"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        tools:layout_editor_absoluteX="0dp"
-        tools:layout_editor_absoluteY="73dp" />
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp"
+        android:gravity="center"
+        tools:ignore="MissingConstraints">
+
+        <ImageView
+            android:layout_width="160dp"
+            android:layout_height="160dp"
+            android:text="Login"
+            android:src="@drawable/icon_account_circle"
+            />
+
+        <TextView
+            android:id="@+id/editUsername"
+            android:hint="username"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_marginLeft="25dp"
+            android:layout_marginRight="25dp"
+            android:layout_marginTop="25dp"
+            android:inputType="text"
+            android:textAlignment="center"
+            />
+
+        <TextView
+            android:id="@+id/editEmail"
+            android:hint="email"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_marginLeft="25dp"
+            android:layout_marginRight="25dp"
+            android:layout_marginTop="25dp"
+            android:inputType="textEmailAddress"
+            android:textSize="15sp"
+            android:textAlignment="center"/>
+
+        <Button
+            android:id="@+id/buttonEdit"
+            android:text="Editar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="25dp"
+            android:layout_marginRight="25dp"
+            android:layout_marginTop="40dp"
+            />
+
+        <Button
+            android:id="@+id/buttonLogout"
+            android:text="Editar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="25dp"
+            android:layout_marginRight="25dp"
+            android:layout_marginTop="40dp"
+            />
+
+    </LinearLayout>
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

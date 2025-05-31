@@ -8,10 +8,12 @@
     tools:context=".ui.notifications.NotificationsFragment">
 
     <LinearLayout
+        android:id="@+id/data_container"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:gravity="center">
+        android:gravity="center"
+        tools:ignore="MissingConstraints">
 
         <ImageView
             android:layout_width="160dp"
