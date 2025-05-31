@@ -1,6 +1,7 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
+    id("org.jetbrains.kotlin.kapt")
 }
 
 android {
@@ -38,17 +39,42 @@ android {
     }
 }
 
+val roomVersion = "2.6.1"
+val lifecycleVersion = "2.6.1"
+val kotlinVersion = "1.9.10"
+val appCompatVersion = "1.7.0"
+val coreKtxVersion = "1.10.1"
+val materialVersion = "1.12.0"
+val constraintLayoutVersion = "2.1.4"
+
 dependencies {
-    implementation(libs.okhttp)
-    implementation(libs.androidx.core.ktx)
-    implementation(libs.androidx.appcompat)
-    implementation(libs.material)
-    implementation(libs.androidx.constraintlayout)
-    implementation(libs.androidx.lifecycle.livedata.ktx)
-    implementation(libs.androidx.lifecycle.viewmodel.ktx)
+    implementation("org.jetbrains.kotlin:kotlin-stdlib:$kotlinVersion")
+
+    // AndroidX
+    implementation("androidx.appcompat:appcompat:$appCompatVersion")
+    implementation("androidx.core:core-ktx:$coreKtxVersion")
+    implementation("com.google.android.material:material:$materialVersion")
+    implementation("androidx.constraintlayout:constraintlayout:$constraintLayoutVersion")
+
+    // Lifecycle
+    implementation("androidx.lifecycle:lifecycle-livedata-ktx:$lifecycleVersion")
+    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycleVersion")
+    implementation("androidx.lifecycle:lifecycle-runtime-ktx:$lifecycleVersion")
+
+    // Navigation
     implementation(libs.androidx.navigation.fragment.ktx)
     implementation(libs.androidx.navigation.ui.ktx)
-    implementation(libs.androidx.room.common.jvm)
+
+    // Room
+    implementation("androidx.room:room-runtime:$roomVersion")
+    implementation("androidx.room:room-ktx:$roomVersion")
+    kapt("androidx.room:room-compiler:$roomVersion")
+
+    // Other libs
+    implementation(libs.okhttp)
+    implementation(libs.androidx.runtime.saved.instance.state)
+
+    // Testing
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

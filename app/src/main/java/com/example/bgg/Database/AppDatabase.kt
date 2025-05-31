@@ -2,6 +2,8 @@ package com.example.bgg.Database
 
 import android.content.Context
 import androidx.room.Database
+import androidx.room.Room
+import androidx.room.RoomDatabase
 import com.example.bgg.DAO.EventDao
 import com.example.bgg.DAO.UserDao
 import com.example.bgg.Entities.EventEntity

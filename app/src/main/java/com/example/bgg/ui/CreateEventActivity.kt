@@ -1,9 +1,14 @@
 package com.example.bgg.ui
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.widget.ArrayAdapter
+import android.widget.Button
+import android.widget.EditText
+import android.widget.ListView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.widget.addTextChangedListener
 import com.example.bgg.DAO.EventDao
 import com.example.bgg.Database.AppDatabase
 import com.example.bgg.Entities.EventEntity
@@ -21,6 +26,7 @@ class CreateEventActivity : AppCompatActivity() {
     private lateinit var eventDao: EventDao
     private var selectedGame: Game? = null
 
+    @SuppressLint("MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_create_event)
@@ -59,7 +65,7 @@ class CreateEventActivity : AppCompatActivity() {
             val people = peopleInput.text.toString().toIntOrNull() ?: 0
 
             selectedGame?.let { game ->
-                val newEvent = EventEntity.EventEntity(
+                val newEvent = EventEntity(
                     gameId = game.id,
                     gameName = game.name,
                     tableNumber = tableNumber,

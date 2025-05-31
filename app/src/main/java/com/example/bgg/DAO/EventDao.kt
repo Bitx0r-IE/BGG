@@ -6,13 +6,11 @@ import androidx.room.Insert
 import androidx.room.Query
 import com.example.bgg.Entities.EventEntity
 
+@Dao
 interface EventDao {
-    @Dao
-    interface EventDao {
-        @Query("SELECT * FROM events")
-        fun getAll(): LiveData<List<EventEntity>>
+    @Query("SELECT * FROM events")
+    fun getAll(): LiveData<List<EventEntity>>
 
-        @Insert
-        abstract fun insert(event: EventEntity)
-    }
+    @Insert
+    suspend fun insert(event: EventEntity)
 }
