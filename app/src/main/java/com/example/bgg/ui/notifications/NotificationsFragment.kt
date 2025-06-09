@@ -76,30 +76,39 @@ class NotificationsFragment : Fragment() {
                 return@setOnClickListener
             }
 
-            // Update user in database
-            CoroutineScope(Dispatchers.IO).launch {
-                val user = userDao.getUserById(userId)
-                if (user != null) {
-                    val updatedUser = user.copy(name = newUsername, email = newEmail)
-                    userDao.updateUser(updatedUser)
+            // Show confirmation dialog before updating
+            androidx.appcompat.app.AlertDialog.Builder(requireContext())
+                .setTitle("Confirm Changes")
+                .setMessage("Are you sure you want to update your profile?")
+                .setPositiveButton("Yes") { dialog, _ ->
+                    dialog.dismiss()
+                    // Update user in database
+                    CoroutineScope(Dispatchers.IO).launch {
+                        val user = userDao.getUserById(userId)
+                        if (user != null) {
+                            val updatedUser = user.copy(name = newUsername, email = newEmail)
+                            userDao.updateUser(updatedUser)
 
-                    // Optionally update SharedPreferences as well
-                    with(sharedPref.edit()) {
-                        putString("username", newUsername)
-                        putString("email", newEmail)
-                        apply()
-                    }
+                            // Optionally update SharedPreferences as well
+                            with(sharedPref.edit()) {
+                                putString("username", newUsername)
+                                putString("email", newEmail)
+                                apply()
+                            }
 
-                    withContext(Dispatchers.Main) {
-                        Toast.makeText(requireContext(), "Profile updated", Toast.LENGTH_SHORT).show()
-                        userData.text = newUsername
-                    }
-                } else {
-                    withContext(Dispatchers.Main) {
-                        Toast.makeText(requireContext(), "User not found", Toast.LENGTH_SHORT).show()
+                            withContext(Dispatchers.Main) {
+                                Toast.makeText(requireContext(), "Profile updated", Toast.LENGTH_SHORT).show()
+                                userData.text = newUsername
+                            }
+                        } else {
+                            withContext(Dispatchers.Main) {
+                                Toast.makeText(requireContext(), "User not found", Toast.LENGTH_SHORT).show()
+                            }
+                        }
                     }
                 }
-            }
+                .setNegativeButton("Cancel", null)
+                .show()
         }
 
         buttonLogout.setOnClickListener {

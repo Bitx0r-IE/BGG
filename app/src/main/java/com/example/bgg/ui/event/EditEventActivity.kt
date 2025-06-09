@@ -104,13 +104,21 @@ class EditEventActivity : AppCompatActivity() {
 
         deleteButton.setOnClickListener {
             selectedEvent?.let { event ->
-                CoroutineScope(Dispatchers.IO).launch {
-                    eventDao.delete(event)
-                    withContext(Dispatchers.Main) {
-                        Toast.makeText(this@EditEventActivity, "Event deleted", Toast.LENGTH_SHORT).show()
-                        finish()
+                androidx.appcompat.app.AlertDialog.Builder(this)
+                    .setTitle("Delete Event")
+                    .setMessage("Are you sure you want to delete this event?")
+                    .setPositiveButton("Delete") { dialog, _ ->
+                        dialog.dismiss()
+                        CoroutineScope(Dispatchers.IO).launch {
+                            eventDao.delete(event)
+                            withContext(Dispatchers.Main) {
+                                Toast.makeText(this@EditEventActivity, "Event deleted", Toast.LENGTH_SHORT).show()
+                                finish()
+                            }
+                        }
                     }
-                }
+                    .setNegativeButton("Cancel", null)
+                    .show()
             }
         }
     }
