@@ -6,17 +6,12 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
-import com.example.bgg.DAO.EventDao
 import com.example.bgg.databinding.FragmentHomeBinding
 import com.example.bgg.ui.adapters.EventAdapter
 import androidx.fragment.app.viewModels
-import com.example.bgg.ui.CreateEventActivity
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.bgg.ui.EditEventActivity
-import com.example.bgg.ui.ViewEventActivity
+import com.example.bgg.ui.event.ViewEventActivity
 
 
 class HomeFragment : Fragment() {

@@ -25,9 +25,9 @@
         </activity>
 
         <activity android:name=".auth.RegisterActivity" />
-        <activity android:name=".ui.CreateEventActivity" />
-        <activity android:name=".ui.EditEventActivity" />
-        <activity android:name=".ui.ViewEventActivity" />
+        <activity android:name=".ui.event.CreateEventActivity" />
+        <activity android:name=".ui.event.EditEventActivity" />
+        <activity android:name=".ui.event.ViewEventActivity" />
 
         <activity
             android:name=".MainActivity"

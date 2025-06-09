@@ -1,21 +1,15 @@
-package com.example.bgg.ui
+package com.example.bgg.ui.event
 import java.util.Calendar
 
 import android.annotation.SuppressLint
 import android.os.Bundle
-import android.widget.ArrayAdapter
-import android.widget.Button
 import android.widget.EditText
-import android.widget.ListView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.widget.addTextChangedListener
 import com.example.bgg.DAO.EventDao
 import com.example.bgg.Database.AppDatabase
 import com.example.bgg.Entities.EventEntity
 import com.example.bgg.R
-import com.example.bgg.api.Game
-import com.example.bgg.api.searchBoardGames
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -25,7 +19,7 @@ import java.text.SimpleDateFormat
 import java.util.Locale
 
 
-class EditEventActivity : AppCompatActivity() {
+class ViewEventActivity : AppCompatActivity() {
 
     private lateinit var db: AppDatabase
     private lateinit var eventDao: EventDao
@@ -34,7 +28,7 @@ class EditEventActivity : AppCompatActivity() {
     @SuppressLint("MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_edit_event)
+        setContentView(R.layout.activity_detail_event)
 
         db = AppDatabase.getDatabase(this)
         eventDao = db.eventDao()
@@ -43,8 +37,7 @@ class EditEventActivity : AppCompatActivity() {
         val tableInput = findViewById<EditText>(R.id.table_number)
         val peopleInput = findViewById<EditText>(R.id.number_of_people)
         val dateInput = findViewById<EditText>(R.id.event_date)
-        val updateButton = findViewById<Button>(R.id.create_event_button)
-        val deleteButton = findViewById<Button>(R.id.delete_event_button)
+
         val formatter = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
 
         val eventId = intent.getIntExtra("eventId", -1)
@@ -79,45 +72,6 @@ class EditEventActivity : AppCompatActivity() {
             datePicker.show()
         }
 
-        updateButton.setOnClickListener {
-            val table = tableInput.text.toString().toIntOrNull() ?: 0
-            val people = peopleInput.text.toString().toIntOrNull() ?: 0
-            val gameName = gameNameInput.text.toString()
-            val date = try { formatter.parse(dateInput.text.toString()) } catch (e: Exception) { null }
-
-            if (date == null) {
-                Toast.makeText(this, "Please select a valid date", Toast.LENGTH_SHORT).show()
-                return@setOnClickListener
-            }
-
-            selectedEvent?.let {
-                val updated = it.copy(
-                    gameName = gameName,
-                    tableNumber = table,
-                    numberOfPeople = people,
-                    Date = date
-                )
-                CoroutineScope(Dispatchers.IO).launch {
-                    eventDao.update(updated)
-                    withContext(Dispatchers.Main) {
-                        Toast.makeText(this@EditEventActivity, "Event updated", Toast.LENGTH_SHORT).show()
-                        finish()
-                    }
-                }
-            }
-        }
-
-        deleteButton.setOnClickListener {
-            selectedEvent?.let { event ->
-                CoroutineScope(Dispatchers.IO).launch {
-                    eventDao.delete(event)
-                    withContext(Dispatchers.Main) {
-                        Toast.makeText(this@EditEventActivity, "Event deleted", Toast.LENGTH_SHORT).show()
-                        finish()
-                    }
-                }
-            }
-        }
     }
 }
 

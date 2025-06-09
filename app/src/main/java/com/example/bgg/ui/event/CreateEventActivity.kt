@@ -1,4 +1,4 @@
-package com.example.bgg.ui
+package com.example.bgg.ui.event
 import java.util.Calendar
 
 import android.annotation.SuppressLint
@@ -6,16 +6,13 @@ import android.os.Bundle
 import android.widget.ArrayAdapter
 import android.widget.Button
 import android.widget.EditText
-import android.widget.ListView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.widget.addTextChangedListener
 import com.example.bgg.DAO.EventDao
 import com.example.bgg.Database.AppDatabase
 import com.example.bgg.Entities.EventEntity
 import com.example.bgg.R
 import com.example.bgg.api.Game
-import com.example.bgg.api.searchBoardGames
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch

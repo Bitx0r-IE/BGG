@@ -22,8 +22,9 @@ class EventAdapter(private val onItemClick: (EventEntity) -> Unit) : ListAdapter
 
     class EventViewHolder(private val binding: ActivityItemLayoutBinding, private val onItemClick: (EventEntity) -> Unit) : RecyclerView.ViewHolder(binding.root) {
         fun bind(event: EventEntity) {
+            val formattedDate = java.text.SimpleDateFormat("yyyy-MM-dd", java.util.Locale.getDefault()).format(event.Date)
             binding.title.text = event.gameName
-            binding.date.text = event.Date.toString()
+            binding.date.text = formattedDate
             // bind image or other data as needed
             binding.root.setOnClickListener {
                 onItemClick(event)
