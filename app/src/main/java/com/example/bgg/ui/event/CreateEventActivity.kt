@@ -1,26 +1,26 @@
 package com.example.bgg.ui.event
-import java.util.Calendar
 
 import android.annotation.SuppressLint
 import android.os.Bundle
-import android.widget.ArrayAdapter
-import android.widget.Button
-import android.widget.EditText
-import android.widget.Toast
+import android.text.Editable
+import android.text.TextWatcher
+import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
+import com.bumptech.glide.Glide
 import com.example.bgg.DAO.EventDao
 import com.example.bgg.Database.AppDatabase
 import com.example.bgg.Entities.EventEntity
 import com.example.bgg.R
 import com.example.bgg.api.Game
+import com.example.bgg.api.searchBoardGames
+import com.example.bgg.api.searchGameDetailsByID
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import android.app.DatePickerDialog
 import java.text.SimpleDateFormat
-import java.util.Locale
-
+import java.util.*
 
 class CreateEventActivity : AppCompatActivity() {
 
@@ -36,31 +36,68 @@ class CreateEventActivity : AppCompatActivity() {
         db = AppDatabase.getDatabase(this)
         eventDao = db.eventDao()
 
-        val game_name = findViewById<EditText>(R.id.game_search)
+        val gameSearch = findViewById<AutoCompleteTextView>(R.id.game_search)
         val tableInput = findViewById<EditText>(R.id.table_number)
         val peopleInput = findViewById<EditText>(R.id.number_of_people)
         val createButton = findViewById<Button>(R.id.create_event_button)
         val eventDateEditText = findViewById<EditText>(R.id.event_date)
 
-        val adapter = ArrayAdapter<Game>(this, android.R.layout.simple_list_item_1)
-        /*
-        searchBox.addTextChangedListener {
-            val query = it.toString()
-            if (query.length > 2) {
+        //val gameImage = findViewById<ImageView>(R.id.game_image)
+        //val gameDescription = findViewById<TextView>(R.id.game_description)
+
+        val gameAdapter = ArrayAdapter<String>(this, android.R.layout.simple_dropdown_item_1line)
+        val gameMap = mutableMapOf<String, Game>()
+
+        gameSearch.setAdapter(gameAdapter)
+
+        gameSearch.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                val query = s.toString()
+                if (query.length >= 3) {
+                    CoroutineScope(Dispatchers.IO).launch {
+                        val games = searchBoardGames(query)
+                        withContext(Dispatchers.Main) {
+                            gameAdapter.clear()
+                            gameMap.clear()
+                            games.forEach {
+                                gameAdapter.add(it.name)
+                                gameMap[it.name] = it
+                            }
+                            gameAdapter.notifyDataSetChanged()
+                        }
+                    }
+                }
+            }
+            override fun afterTextChanged(s: Editable?) {}
+        })
+
+        gameSearch.setOnItemClickListener { _, _, position, _ ->
+            val selectedName = gameAdapter.getItem(position)
+            selectedGame = gameMap[selectedName]
+
+            // Fetch details to get image and description
+            selectedGame?.let { game ->
                 CoroutineScope(Dispatchers.IO).launch {
-                    val results = searchBoardGames(query)
+                    val detail = searchGameDetailsByID(game.id)
                     withContext(Dispatchers.Main) {
-                        adapter.clear()
-                        adapter.addAll(results)
+                        /*if (detail != null) {
+                            gameDescription.text = detail.desc
+                            gameDescription.visibility = TextView.VISIBLE
+                            gameImage.visibility = ImageView.VISIBLE
+                            Glide.with(this@CreateEventActivity)
+                                .load(detail.img)
+                                .centerCrop()
+                                .into(gameImage)
+                        } else {
+                            gameDescription.visibility = TextView.GONE
+                            gameImage.visibility = ImageView.GONE
+                        }*/
                     }
                 }
             }
         }
 
-        resultsList.setOnItemClickListener { _, _, position, _ ->
-            selectedGame = adapter.getItem(position)
-        }
-        */
         eventDateEditText.setOnClickListener {
             val calendar = Calendar.getInstance()
             val year = calendar.get(Calendar.YEAR)
@@ -68,7 +105,6 @@ class CreateEventActivity : AppCompatActivity() {
             val day = calendar.get(Calendar.DAY_OF_MONTH)
 
             val datePicker = DatePickerDialog(this, { _, selectedYear, selectedMonth, selectedDay ->
-                // Note: Month is zero-based (0 = January)
                 val selectedDate = String.format("%04d-%02d-%02d", selectedYear, selectedMonth + 1, selectedDay)
                 eventDateEditText.setText(selectedDate)
             }, year, month, day)
@@ -96,8 +132,10 @@ class CreateEventActivity : AppCompatActivity() {
                 return@setOnClickListener
             }
 
+            val gameName = selectedGame?.name ?: gameSearch.text.toString()
+
             val newEvent = EventEntity(
-                gameName = game_name.text.toString(),
+                gameName = gameName,
                 tableNumber = tableNumber,
                 numberOfPeople = people,
                 createdBy = userId,
@@ -110,23 +148,6 @@ class CreateEventActivity : AppCompatActivity() {
                     finish()
                 }
             }
-            /*
-            selectedGame?.let { game ->
-                val newEvent = EventEntity(
-                    gameName = game.name,
-                    tableNumber = tableNumber,
-                    numberOfPeople = people,
-                    createdBy = userId,
-                    Date = selectedDate
-                )
-                CoroutineScope(Dispatchers.IO).launch {
-                    eventDao.insert(newEvent)
-                    withContext(Dispatchers.Main) {
-                        Toast.makeText(this@CreateEventActivity, "Event Created", Toast.LENGTH_SHORT).show()
-                        finish()
-                    }
-                }
-            } ?: Toast.makeText(this, "Select a game", Toast.LENGTH_SHORT).show()*/
         }
     }
 }
